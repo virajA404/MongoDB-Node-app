@@ -13,7 +13,7 @@ module.exports = {
             })
             .catch(err => {
                 console.log(err);
-                return cb()
+                return cb(err)
             })
     },
     //retrieve db connection after connecting
