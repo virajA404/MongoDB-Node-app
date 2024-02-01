@@ -1,10 +1,11 @@
-const express = require('express')
-const { connectToDb, getDb} = require('./db')
+import express  from 'express';
+import {connectToDb,getDb} from './db.js';
 
 //init app & middleware
 const app = express();
 
-//db 
+
+//connecting to db
 let db;
 
 connectToDb((err) => {
