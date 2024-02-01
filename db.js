@@ -1,21 +1,18 @@
 //destructuring the client obj. MongoClient helps to connect to db 
-const { MongoClient } = require('mongodb');
+import { MongoClient } from 'mongodb';
 
 let dbConnection;
 
-module.exports = {
-    //connect to a db
-    connectToDb: (cb) => {
-        MongoClient.connect('mongodb://localhost:27017/bookstore')
-            .then((client) => {
-                dbConnection = client.db()
-                return cb()
-            })
-            .catch(err => {
-                console.log(err);
-                return cb(err)
-            })
-    },
-    //retrieve db connection after connecting
-    getDb: () => dbConnection
-}
+export const connectToDb = async (cb) => {
+    try {
+        //connecting to db
+        const client = await MongoClient.connect('mongodb://localhost:27017/bookstore');
+        dbConnection = client.db();
+        await cb();
+    } catch (err) {
+        console.log(err);
+        await cb(err);
+    }
+};
+//return db connection after connecting
+export const getDb = () => dbConnection;
