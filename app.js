@@ -76,30 +76,68 @@ app.get('/books/:id', async (req, res) => {
         if (ObjectId.isValid(req.params.id)) {
             //getting the book matches with the id to doc variable
             const doc = await db.collection('books').findOne({ _id: new ObjectId(req.params.id) });
-            if (doc) {
                 res.status(200).json(doc);
-            } else {
-                res.status(500).json({ error: 'Could not fetch the document' });
-            }
         } else {
             res.status(500).json({ error: 'Not valid document id' });
         }
     } catch (err) {
-        res.status(500).json({ error: 'An error occurred while processing the request' });
+        res.status(500).json({ error: 'Could not fetch the document' });
     }
 });
 
 
 //post request - adding a book to db
-app.post('/books', (req, res) => {
-    const book = req.body;
+// app.post('/books', (req, res) => {
+//     const book = req.body;
 
-    db.collection('books')
-        .insertOne(book)
-        .then(result => {
-            res.status(201).json(result)
-        })
-        .catch(err => {
-            res.status(500).json({err: 'Could not create a new document'})
-        })
-})
+//     db.collection('books')
+//         .insertOne(book)
+//         .then(result => {
+//             res.status(201).json(result)
+//         })
+//         .catch(err => {
+//             res.status(500).json({err: 'Could not create a new document'})
+//         })
+// })
+app.post('/books', async (req, res) => {
+
+    try {
+        const book = req.body;
+        const newBook = await db.collection('books').insertOne(book);
+        res.status(201).json(newBook);
+    } catch {
+        res.status(500).json({ err: 'Could not create a new document' })
+    }
+
+});
+
+
+//delete request - deleting a book
+//OLD SYNTAX
+// app.delete('/books/:id', async (req, res) => {
+//     if (ObjectId.isValid(req.params.id)) {
+//         db.collection('books')
+//             .deleteOne({ _id: new ObjectId(req.params.id) })
+//             .then(doc => {
+//                 res.status(200).json(doc)
+//             })
+//             .catch(err => {
+//                 res.status(500).json({ error: 'Could not delete the document' })
+//             })
+//     } else {
+//         res.status(500).json({ error: 'Not valid document id' })
+//     }
+// });
+
+app.delete('/books/:id', async (req, res) => {
+    try {
+        if (ObjectId.isValid(req.params.id)) {
+            const doc = await db.collection('books').deleteOne({ _id: new ObjectId(req.params.id) });
+            res.status(200).json(doc);
+        } else {
+            res.status(500).json({ error: 'Not valid document id' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Could not delete the document' });
+    }
+});
