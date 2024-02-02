@@ -47,4 +47,38 @@ app.get("/books", async (req, res) => {
     //     })
 });
 
+//fetch one document(book)
+// app.get('/books/:id', (req,res) => {
 
+//     if(ObjectId.isValid(req.params.id)){
+//         db.collection('books')
+//         .findOne({_id: new ObjectId(req.params.id)})
+//         .then(doc => {
+//             res.status(200).json(doc) 
+//         })
+//         .catch(err => {
+//             res.status(500).json({error: 'Could not fetch the document'})
+//         })
+//     }else{
+//         res.status(500).json({error: 'Not valid document id'})
+//     }
+// })
+
+app.get('/books/:id', async (req, res) => {
+    try {
+        //checking if the id parameter is valid
+        if (ObjectId.isValid(req.params.id)) {
+            //getting the book matches with the id to doc variable
+            const doc = await db.collection('books').findOne({ _id: new ObjectId(req.params.id) });
+            if (doc) {
+                res.status(200).json(doc);
+            } else {
+                res.status(500).json({ error: 'Could not fetch the document' });
+            }
+        } else {
+            res.status(500).json({ error: 'Not valid document id' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'An error occurred while processing the request' });
+    }
+});
