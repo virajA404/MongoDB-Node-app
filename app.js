@@ -1,10 +1,16 @@
 import express from "express";
 import { connectToDb, getDb } from "./db.js";
 import { ObjectId } from "mongodb";
+import bodyParser from "body-parser";
 
 
 //init app & middleware
 const app = express();
+
+app.use(express.json())
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 //connecting to db
 let db;
@@ -82,3 +88,18 @@ app.get('/books/:id', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while processing the request' });
     }
 });
+
+
+//post request - adding a book to db
+app.post('/books', (req, res) => {
+    const book = req.body;
+
+    db.collection('books')
+        .insertOne(book)
+        .then(result => {
+            res.status(201).json(result)
+        })
+        .catch(err => {
+            res.status(500).json({err: 'Could not create a new document'})
+        })
+})
