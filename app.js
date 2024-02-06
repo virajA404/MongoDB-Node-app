@@ -26,10 +26,13 @@ connectToDb((err) => {
 
 //Fetch all the books
 app.get("/books", async (req, res) => {
-    let books = [];
-
     try {
-        const cursor = await db.collection("books").find().sort({ author: 1 });
+        const pages = req.query.p || 0;
+        const booksPerPage = 1;
+
+        let books = [];
+        
+        const cursor = await db.collection("books").find().sort({ author: 1 }).skip(pages * booksPerPage).limit(booksPerPage);
 
         await cursor.forEach((book) => {
             books.push(book);
