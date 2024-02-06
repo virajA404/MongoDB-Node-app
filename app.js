@@ -141,3 +141,18 @@ app.delete('/books/:id', async (req, res) => {
         res.status(500).json({ error: 'Could not delete the document' });
     }
 });
+
+app.patch('/books/:id', async(req, res) => {
+    try{
+        const update = req.body;
+        if(ObjectId.isValid(req.params.id)) {
+            const result = await db.collection('books').updateOne({_id: new ObjectId(req.params.id)}, {$set: update});
+            res.status(200).json(result);
+        }else {
+            res.status(500).json({ error: 'Not valid document id' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Could not update the document' });
+    }
+
+});
