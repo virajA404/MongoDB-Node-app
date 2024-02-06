@@ -6,7 +6,7 @@ let dbConnection;
 export const connectToDb = async (cb) => {
     try {
         //connecting to db
-        const client = await MongoClient.connect('mongodb://localhost:27017/bookstore');
+        const client = await MongoClient.connect('mongodb+srv://abeywardana21:<password>@cluster0.e6gjxfg.mongodb.net/?retryWrites=true&w=majority');
         dbConnection = client.db();
         await cb();
     } catch (err) {
